@@ -1,0 +1,41 @@
+# In ./api/garden.yml
+kind: Build
+name: api
+description: Build the API container image
+type: container
+
+---
+
+kind: Deploy
+name: api
+type: kubernetes
+description: Deploy the API
+dependencies: [build.api, run.db-seed] # <--- We need to build the api before deploying it
+
+spec:
+  files: [./manifests/*] # <--- Tell Garden what manifests to use
+
+  defaultTarget: # <--- This tells Garden what "target" to use for logs, code syncing and more
+    kind: Deployment
+    name: api
+
+  sync: # <--- Add this
+    paths:
+      - sourcePath: .
+        containerPath: /app
+        mode: "one-way-replica"
+    overrides:
+      - command:
+          ["/bin/sh", "-c", "ls /app/app.py | entr -r -n python /app/app.py"]
+
+  # Patch the K8s manifests for the api service so that we can set the correct image
+  patchResources:
+    - name: api
+      kind: Deployment
+      patch:
+        spec:
+          template:
+            spec:
+              containers:
+                - name: api
+                  image: ${actions.build.api.outputs.deploymentImageId} # <--- Reference the output from the Build action

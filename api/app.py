@@ -24,7 +24,7 @@ hostname = socket.gethostname()
 app = Flask(__name__)
 CORS(app)
 
-print("Starting API")
+print("Starting API...")
 
 @app.route("/health", methods=['GET'])
 def health():

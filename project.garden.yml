@@ -1,0 +1,63 @@
+# Documentation about Garden projects can be found at https://docs.garden.io/using-garden/projects
+# Reference for Garden projects can be found at https://docs.garden.io/reference/project-config
+
+apiVersion: garden.io/v1
+kind: Project
+name: web-app-example
+
+defaultEnvironment: ephemeral
+
+variables:
+  # use garden template strings to create a unique namespace for each user.
+  # you can learn more about template strings here: https://docs.garden.io/using-garden/variables-and-templating
+  userNamespace: web-app-example-${kebabCase(local.username)}
+
+# Environments typically represent different stages of your development and deployment process.
+environments:
+  # Use this environment to build, develop, and test in a temporary, remote Kubernetes cluster that's managed by Garden.
+  # Learn more about Garden managed ephemeral clusters here: https://docs.garden.io/kubernetes-plugins/ephemeral-k8s
+  - name: ephemeral
+    defaultNamespace: ${var.userNamespace}
+
+  # Use this environment to build, develop, and test in your local Kubernetes solution of choice.
+  # Installation instructions and list of supported local Kubernetes environments: https://docs.garden.io/kubernetes-plugins/local-k8s/install
+  - name: local
+    defaultNamespace: ${var.userNamespace}
+    # Setting the hostname as a variable so it can be referenced by actions
+    hostname: local.app.garden
+
+  # Use this environment to build, develop, and test in remote, production-like environments that scale with your stack.
+  # It enables sharing build and test caches with your entire team, which can significantly speed up pipelines and development.
+  - name: remote-dev
+    defaultNamespace: ${var.userNamespace}
+    # Setting the hostname as a variable so it can be referenced by actions
+    hostname: <add-your-hostname-here>
+
+  # Similar to the remote-dev environment but meant for staging environments. Use this to e.g. deploy preview
+  # environments during code review.
+  - name: staging
+    # Ask before performing potentially destructive commands like "deploy".
+    production: true
+    # Isolate namespaces by git branch namespace in the staging environment
+    defaultNamespace: web-app-example-${git.branch}
+
+# Providers make action types available in your Garden configuration and tell Garden how to connect with your infrastructure.
+# For example the kubernetes and local-kubernetes providers allow you to use the container, helm and kubernetes action types.
+# All available providers and their configuration options are listed in the reference docs: https://docs.garden.io/reference/providers
+providers:
+  - name: ephemeral-kubernetes
+    environments: [ephemeral]
+  - name: local-kubernetes
+    environments: [local]
+
+  # To configure the remote kubernetes providers, follow the steps at https://docs.garden.io/kubernetes-plugins/remote-k8s
+  - name: kubernetes
+    environments: [remote-dev]
+    # context: ...
+  - name: kubernetes
+    environments: [staging]
+    # context:
+
+# Next step: Define actions to tell Garden how to build, test and deploy your code.
+# You can learn more by going through our 'First Project' tutorial at: https://docs.garden.io/tutorials/your-first-project
+# Or dive right in the action guide: https://docs.garden.io/using-garden/actions
