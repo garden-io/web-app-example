@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: ${actions.build.web.outputs.deploymentImageId}
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: HOSTNAME
+            value: "web.${providers.ephemeral-kubernetes.outputs.default-hostname}"
+          - name: VUE_APP_USERNAME
+            value: ${local.username}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 3
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 2
+          periodSeconds: 1
+          successThreshold: 2
+          timeoutSeconds: 3
+        resources:
+          limits:
+            memory: 300Mi
+          requests:
+            cpu: 10m
+            memory: 90Mi
+        securityContext:
+          allowPrivilegeEscalation: false
