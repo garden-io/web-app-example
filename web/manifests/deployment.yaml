@@ -18,7 +18,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
           - name: HOSTNAME
-            value: "web.${providers.ephemeral-kubernetes.outputs.default-hostname}"
+            value: "web.${environment.name == 'ephemeral' ? providers.ephemeral-kubernetes.outputs.default-hostname : var.hostname}"
           - name: VUE_APP_USERNAME
             value: ${local.username}
         livenessProbe:
