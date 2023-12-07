@@ -1,0 +1,33 @@
+kind: Deploy
+name: db
+type: helm
+spec:
+  chart:
+    name: postgresql
+    repo: https://charts.bitnami.com/bitnami
+    version: "12.4.2"
+  values:
+    fullnameOverride: postgres
+    auth:
+      postgresPassword: postgres
+    primary:
+      readinessProbe:
+        successThreshold: 3
+---
+
+kind: Run
+name: db-seed
+type: container
+dependencies: [deploy.db]
+spec:
+  image: postgres:12.4-alpine
+  command:
+    [
+      "/bin/sh",
+      "-c",
+      "sleep 10 && psql -w --host=postgres --port=5432 -d $PGDATABASE -c 'CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL UNIQUE, vote VARCHAR(255) NOT NULL, created_at timestamp default NULL)'",
+    ]
+  env:
+    PGDATABASE: postgres
+    PGUSER: postgres
+    PGPASSWORD: postgres
