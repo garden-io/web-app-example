@@ -19,12 +19,19 @@
 
 ## Welcome to Garden's Three Tier Web App Example 👋
 
-This repository contains the three tier web app that's used in the [Getting Started with
-Garden video series](https://youtu.be/0y5E8K-8kr4) and in the ['Your First Project' tutorial](https://docs.garden.io/tutorials/your-first-project) from our documentation.
+This repository contains the three tier web app that's used in the [Getting Started with Garden video series](https://youtu.be/0y5E8K-8kr4) and in the ['Your First Project' tutorial](https://docs.garden.io/tutorials/your-first-project) from our documentation.
 
 - If you're coming from the tutorial, checkout out to the [`tutorial-start`](https://github.com/garden-io/web-app-example/tree/tutorial-start) branch to follow along.
 - If you're coming from the tutorial but can't wait to see the end result, checkout out to the [`tutorial-complete`](https://github.com/garden-io/web-app-example/tree/tutorial-complete) branch.
 - If you're here to look at the end result of the "Getting Started" video, use the `main` branch.
+
+If you see any issues or bugs, kindly report them to the [main Garden repo](https://github.com/garden-io/garden/issues/new).
+
+<div align="center">
+  <a href="https://youtu.be/0y5E8K-8kr4?feature=shared">
+     <img src="https://img.youtube.com/vi/0y5E8K-8kr4/0.jpg" style="width:100%;max-width:600px;" alt="Getting Started With Garden Video">
+  </a>
+</div>
 
 ## About the project
 
