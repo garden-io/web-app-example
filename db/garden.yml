@@ -14,7 +14,6 @@ spec:
       readinessProbe:
         successThreshold: 3
 ---
-
 kind: Run
 name: db-seed
 type: container
@@ -22,11 +21,14 @@ dependencies: [deploy.db]
 spec:
   image: postgres:12.4-alpine
   command:
-    [
-      "/bin/sh",
-      "-c",
-      "sleep 10 && psql -w --host=postgres --port=5432 -d $PGDATABASE -c 'CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL UNIQUE, vote VARCHAR(255) NOT NULL, created_at timestamp default NULL)'",
-    ]
+    - /bin/sh
+    - -c
+    - |
+      psql -w \
+        --host=postgres \
+        --port=5432 \
+        -d $PGDATABASE \
+        -c 'CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL UNIQUE, vote VARCHAR(255) NOT NULL, created_at timestamp default NULL)'
   env:
     PGDATABASE: postgres
     PGUSER: postgres

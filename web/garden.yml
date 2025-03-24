@@ -3,13 +3,12 @@ name: web
 type: container
 
 ---
-
 kind: Deploy
-name: web 
+name: web
 type: kubernetes
-dependencies: ["build.web", "deploy.api"]
+dependencies: [deploy.api]
 spec:
-  files: [./manifests/*]
+  manifestFiles: [./manifests/*]
 
   # Default target for syncs and exec commands
   defaultTarget:
@@ -37,11 +36,10 @@ spec:
                   image: ${actions.build.web.outputs.deploymentImageId}
 
 ---
-
 kind: Test
 name: e2e
 type: container
-dependencies: ["deploy.web"]
+dependencies: [deploy.web]
 spec:
   image: ${actions.build.web.outputs.deploymentImageId}
   command: [npm, run, test:e2e]

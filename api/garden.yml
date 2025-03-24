@@ -1,15 +1,14 @@
 kind: Build
-name: api 
+name: api
 type: container
 
 ---
-
 kind: Deploy
-name: api 
+name: api
 type: kubernetes
-dependencies: ["build.api", "run.db-seed"]
+dependencies: [run.db-seed]
 spec:
-  files: [./manifests/*]
+  manifestFiles: [./manifests/*]
 
   # Default target for syncs and exec commands
   defaultTarget:
@@ -24,7 +23,7 @@ spec:
     overrides:
       - command:
           ["/bin/sh", "-c", "ls /app/app.py | entr -r -n python /app/app.py"]
-    
+
   # Patch the K8s manifests for the api service so that we can set the correct image
   patchResources:
     - name: api
@@ -36,4 +35,3 @@ spec:
               containers:
                 - name: api
                   image: ${actions.build.api.outputs.deploymentImageId}
-
