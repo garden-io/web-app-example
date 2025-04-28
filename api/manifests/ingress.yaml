@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "api.${providers.ephemeral-kubernetes.outputs.default-hostname}"
+  - host: "api.${var.hostname}"
     http:
       paths:
       - backend:
