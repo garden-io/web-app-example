@@ -5,6 +5,9 @@ name: three-tier
 
 environments: # <--- Every Garden project has one more environments
   - name: dev
+    variables: 
+      hostname: 
+        "local.demo.garden"
 
 providers:
   - name: local-kubernetes

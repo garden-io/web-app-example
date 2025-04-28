@@ -8,7 +8,7 @@ name: web
 type: kubernetes
 dependencies: [deploy.api]
 spec:
-  manifestFiles: [./manifests/*]
+  manifestTemplates: [./manifests/*]
 
   # Default target for syncs and exec commands
   defaultTarget:
